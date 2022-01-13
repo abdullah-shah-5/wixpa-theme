@@ -12,20 +12,7 @@
       "type_header_font": "assistant_n4",
       "type_body_font": "assistant_n4",
       "sections": {
-        "announcement-bar": {
-          "type": "announcement-bar",
-          "blocks": {
-            "announcement-bar-0": {
-              "type": "announcement",
-              "settings": {
-                "color_scheme": "background-1"
-              }
-            }
-          },
-          "block_order": [
-            "announcement-bar-0"
-          ]
-        }
+  
       }
     },
     "Craft": {

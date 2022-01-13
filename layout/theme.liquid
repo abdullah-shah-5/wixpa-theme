@@ -28,6 +28,7 @@
     {% endif %}
 
     {% render 'meta-tags' %}
+    {{ content_for_header }}
 
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
