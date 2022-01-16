@@ -1,322 +1,111 @@
-{{ 'collage.css' | asset_url | stylesheet_tag }}
-{{ 'component-card.css' | asset_url | stylesheet_tag }}
-{{ 'component-price.css' | asset_url | stylesheet_tag }}
-{{ 'component-modal-video.css' | asset_url | stylesheet_tag }}
-
-{%- style -%}
-  .section-{{ section.id }}-padding {
-    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
-    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
-  }
-
-  @media screen and (min-width: 750px) {
-    .section-{{ section.id }}-padding {
-      padding-top: {{ section.settings.padding_top }}px;
-      padding-bottom: {{ section.settings.padding_bottom }}px;
-    }
-  }
-{%- endstyle -%}
-
-<link rel="stylesheet" href="{{ 'component-deferred-media.css' | asset_url }}" media="print" onload="this.media='all'">
-
-<div class="page-width{% if section.settings.heading == blank %} no-heading{% endif %} section-{{ section.id }}-padding">
-  <h2 class="collage-wrapper-title">{{ section.settings.heading | escape }}</h2>
-  <div class="collage{% if section.settings.mobile_layout == 'collage' %} collage--mobile{% endif %}">
-    {%- for block in section.blocks -%}
-      <div class="collage__item collage__item--{{ block.type }} collage__item--{{ section.settings.desktop_layout }}" {{ block.shopify_attributes }}>
-        {%- case block.type -%}
-          {%- when 'image' -%}
-            <div class="collage-card color-{{ settings.card_color_scheme }}{% if block.settings.image_padding %} collage-card-spacing{% endif %}">
-              <div class="media media--transparent ratio"{% if block.settings.image != blank %} style="--ratio-percent: {{ 1 | divided_by: block.settings.image.aspect_ratio | times: 100 }}%"{% else %} style="--ratio-percent: 100%"{% endif %}>
-                {%- if block.settings.image != blank -%}
-                  <img
-                    srcset="{%- if block.settings.image.width >= 550 -%}{{ block.settings.image | img_url: '550x' }} 550w,{%- endif -%}
-                      {%- if block.settings.image.width >= 720 -%}{{ block.settings.image | img_url: '720x' }} 720w,{%- endif -%}
-                      {%- if block.settings.image.width >= 990 -%}{{ block.settings.image | img_url: '990x' }} 990w,{%- endif -%}
-                      {%- if block.settings.image.width >= 1100 -%}{{ block.settings.image | img_url: '1100x' }} 1100w,{%- endif -%}
-                      {%- if block.settings.image.width >= 1500 -%}{{ block.settings.image | img_url: '1500x' }} 1500w,{%- endif -%}
-                      {%- if block.settings.image.width >= 2200 -%}{{ block.settings.image | img_url: '2200x' }} 2200w,{%- endif -%}
-                      {%- if block.settings.image.width >= 3000 -%}{{ block.settings.image | img_url: '3000x' }} 3000w,{%- endif -%}
-                      {{ block.settings.image | img_url: 'master' }} {{ block.settings.image.width }}w"
-                    src="{{ block.settings.image | img_url: '1500x' }}"
-                    sizes="(min-width: {{ settings.page_width }}px) {% if section.blocks.size == 1 %}calc({{ settings.page_width }}px - 100px){% else %}{{ settings.page_width | minus: 100 | times: 0.67 | round }}px{% endif %}, (min-width: 750px){% if section.blocks.size == 1 %} calc(100vw - 100px){% else %} 500px{% endif %}, calc(100vw - 30px)"
-                    alt="{{ block.settings.image.alt | escape }}"
-                    loading="lazy"
-                    width="{{ block.settings.image.width }}"
-                    height="{{ block.settings.image.height }}"
-                  >
-                {%- else -%}
-                  {{ 'image' | placeholder_svg_tag: 'placeholder-svg placeholder' }}
-                {%- endif -%}
-              </div>
-            </div>
-          {%- when 'product' -%}
-            {% render 'card-product',
-              card_product: block.settings.product,
-              media_aspect_ratio: 'adapt',
-              show_secondary_image: block.settings.second_image,
-              extend_height: true
-            %}
-          {%- when 'collection' -%}
-            {% render 'card-collection',
-              card_collection: block.settings.collection,
-              media_aspect_ratio: 'adapt',
-              columns: 2,
-              extend_height: true
-            %}
-          {%- when 'video' -%}
-            <div class="collage-card color-{{ settings.card_color_scheme }}">
-              <noscript>
-                <a href="{{ block.settings.video_url }}" class="collage-card__link{% if block.settings.image_padding %} collage-card-spacing{% endif %}">
-                  <div class="media media--transparent ratio"{% if block.settings.cover_image != blank %} style="--ratio-percent: {{ 1 | divided_by: block.settings.cover_image.aspect_ratio | times: 100 }}%"{% else %} style="--ratio-percent: 100%"{% endif %}>
-                    {%- if block.settings.cover_image != blank -%}
-                      <img
-                        srcset="{%- if block.settings.cover_image.width >= 550 -%}{{ block.settings.cover_image | img_url: '550x' }} 550w,{%- endif -%}
-                          {%- if block.settings.cover_image.width >= 720 -%}{{ block.settings.cover_image | img_url: '720x' }} 720w,{%- endif -%}
-                          {%- if block.settings.cover_image.width >= 990 -%}{{ block.settings.cover_image | img_url: '990x' }} 990w,{%- endif -%}
-                          {%- if block.settings.cover_image.width >= 1100 -%}{{ block.settings.cover_image | img_url: '1100x' }} 1100w,{%- endif -%}
-                          {%- if block.settings.cover_image.width >= 1500 -%}{{ block.settings.cover_image | img_url: '1500x' }} 1500w,{%- endif -%}
-                          {%- if block.settings.cover_image.width >= 2200 -%}{{ block.settings.cover_image | img_url: '2200x' }} 2200w,{%- endif -%}
-                          {%- if block.settings.cover_image.width >= 3000 -%}{{ block.settings.cover_image | img_url: '3000x' }} 3000w,{%- endif -%}
-                          {{ block.settings.cover_image | img_url: 'master' }} {{ block.settings.cover_image.width }}w"
-                        src="{{ block.settings.cover_image | img_url: '1500x' }}"
-                        sizes="(min-width: {{ settings.page_width }}px) {% if section.blocks.size == 1 %}calc({{ settings.page_width }}px - 100px){% else %}{{ settings.page_width | minus: 100 | times: 0.67 | round }}px{% endif %}, (min-width: 750px){% if section.blocks.size == 1 %} calc(100vw - 100px){% else %} 500px{% endif %}, calc(100vw - 30px)"
-                        alt="{{ block.settings.description | escape }}"
-                        loading="lazy"
-                        width="{{ block.settings.cover_image.width }}"
-                        height="{{ block.settings.cover_image.height }}"
-                      >
-                    {%- else -%}
-                      {{ 'collection-2' | placeholder_svg_tag: 'placeholder-svg placeholder' }}
-                    {%- endif -%}
-                  </div>
-                </a>
-              </noscript>
-              <modal-opener class="no-js-hidden" data-modal="#PopupModal-{{ block.id }}">
-                <div class="deferred-media">
-                  <button class="deferred-media__poster full-unstyled-link{% if block.settings.image_padding %} collage-card-spacing{% endif %}" type="button" aria-haspopup="dialog" data-media-id="{{ block.settings.video_url.id }}">
-                    <div class="media media--transparent ratio"{% if block.settings.cover_image != blank %} style="--ratio-percent: {{ 1 | divided_by: block.settings.cover_image.aspect_ratio | times: 100 }}%"{% else %} style="--ratio-percent: 100%"{% endif %}>
-                      <span class="deferred-media__poster-button motion-reduce">
-                        {%- render 'icon-play' -%}
-                      </span>
-
-                      {%- if block.settings.cover_image != blank -%}
-                        <img
-                          srcset="{%- if block.settings.cover_image.width >= 550 -%}{{ block.settings.cover_image | img_url: '550x' }} 550w,{%- endif -%}
-                            {%- if block.settings.cover_image.width >= 720 -%}{{ block.settings.cover_image | img_url: '720x' }} 720w,{%- endif -%}
-                            {%- if block.settings.cover_image.width >= 990 -%}{{ block.settings.cover_image | img_url: '990x' }} 990w,{%- endif -%}
-                            {%- if block.settings.cover_image.width >= 1100 -%}{{ block.settings.cover_image | img_url: '1100x' }} 1100w,{%- endif -%}
-                            {%- if block.settings.cover_image.width >= 1500 -%}{{ block.settings.cover_image | img_url: '1500x' }} 1500w,{%- endif -%}
-                            {%- if block.settings.cover_image.width >= 2200 -%}{{ block.settings.cover_image | img_url: '2200x' }} 2200w,{%- endif -%}
-                            {%- if block.settings.cover_image.width >= 3000 -%}{{ block.settings.cover_image | img_url: '3000x' }} 3000w,{%- endif -%}
-                            {{ block.settings.cover_image | img_url: 'master' }} {{ block.settings.cover_image.width }}w"
-                          src="{{ block.settings.cover_image | img_url: '1500x' }}"
-                          sizes="(min-width: {{ settings.page_width }}px) {% if section.blocks.size == 1 %}calc({{ settings.page_width }}px - 100px){% else %}{{ settings.page_width | minus: 100 | times: 0.67 | round }}px{% endif %}, (min-width: 750px){% if section.blocks.size == 1 %} calc(100vw - 100px){% else %} 500px{% endif %}, calc(100vw - 30px)"
-                          alt="{{ block.settings.description | escape }}"
-                          loading="lazy"
-                          width="{{ block.settings.cover_image.width }}"
-                          height="{{ block.settings.cover_image.height }}"
-                        >
-                      {%- else -%}
-                        {{ 'collection-2' | placeholder_svg_tag: 'placeholder-svg placeholder' }}
-                      {%- endif -%}
-                    </div>
-                  </button>
-                </div>
-              </modal-opener>
-              <modal-dialog id="PopupModal-{{ block.id }}" class="modal-video media-modal color-background-1">
-                <div class="modal-video__content" role="dialog" aria-label="{{ block.settings.description | escape }}" aria-modal="true" tabindex="-1">
-                  <button id="ModalClose-{{ block.id }}" type="button" class="modal-video__toggle" aria-label="{{ 'accessibility.close' | t }}">{% render 'icon-close' %}</button>
-                  <div class="modal-video__content-info">
-                    <deferred-media class="modal-video__video template-popup">
-                      <template>
-                        {%- if block.settings.video_url.type == 'youtube' -%}
-                          <iframe src="https://www.youtube.com/embed/{{ block.settings.video_url.id }}?enablejsapi=1" class="js-youtube" allow="autoplay; encrypted-media" allowfullscreen title="{{ block.settings.description | escape }}" ></iframe>
-                        {%- else -%}
-                          <iframe src="https://player.vimeo.com/video/{{ block.settings.video_url.id }}" class="js-vimeo" allow="autoplay; encrypted-media" allowfullscreen title="{{ block.settings.description | escape }}"></iframe>
-                        {%- endif -%}
-                      </template>
-                    </deferred-media>
-                  </div>
-                </div>
-              </modal-dialog>
-            </div>
-        {%- endcase -%}
+<section class="text-gray-600 body-font">
+  <div class="container px-5 py-24 mx-auto flex flex-wrap">
+    <div class="lg:w-1/2 w-full mb-10 lg:mb-0 rounded-lg overflow-hidden">
+      <img alt="feature" class="object-cover object-center h-full w-full" src="{{ section.settings.product_featured.featured_image.src }}">
+    </div>
+    <div class="flex flex-col flex-wrap lg:py-6 -mb-10 lg:w-1/2 lg:pl-12 lg:text-left text-center">
+      <div class="flex flex-col mb-10 lg:items-start items-center">
+        <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-5">
+          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-6 h-6" viewBox="0 0 24 24">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+          </svg>
+        </div>
+        <div class="flex-grow">
+          <h2 class="text-gray-900 text-lg title-font font-medium mb-3">{{ section.settings.featured_title_1 }}</h2>
+          <p class="leading-relaxed text-base">{{ section.settings.featured_description_1 }}</p>
+          <a class="mt-3 text-indigo-500 inline-flex items-center">Learn More
+            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
+              <path d="M5 12h14M12 5l7 7-7 7"></path>
+            </svg>
+          </a>
+        </div>
       </div>
-    {%- endfor -%}
+      <div class="flex flex-col mb-10 lg:items-start items-center">
+        <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-5">
+          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-6 h-6" viewBox="0 0 24 24">
+            <circle cx="6" cy="6" r="3"></circle>
+            <circle cx="6" cy="18" r="3"></circle>
+            <path d="M20 4L8.12 15.88M14.47 14.48L20 20M8.12 8.12L12 12"></path>
+          </svg>
+        </div>
+        <div class="flex-grow">
+          <h2 class="text-gray-900 text-lg title-font font-medium mb-3">{{ section.settings.featured_title_2 }}</h2>
+          <p class="leading-relaxed text-base">{{ section.settings.featured_description_2 }}</p>
+          <a class="mt-3 text-indigo-500 inline-flex items-center">Learn More
+            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
+              <path d="M5 12h14M12 5l7 7-7 7"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col mb-10 lg:items-start items-center">
+        <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-5">
+          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-6 h-6" viewBox="0 0 24 24">
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </div>
+        <div class="flex-grow">
+          <h2 class="text-gray-900 text-lg title-font font-medium mb-3">{{ section.settings.featured_title_3 }}</h2>
+          <p class="leading-relaxed text-base">{{ section.settings.featured_description_3 }}</p>
+          <a class="mt-3 text-indigo-500 inline-flex items-center">Learn More
+            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
+              <path d="M5 12h14M12 5l7 7-7 7"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
+</section>
+
+
 
 {% schema %}
 {
-  "name": "t:sections.collage.name",
-  "tag": "section",
-  "class": "section",
-  "settings": [
-    {
+ "name": "Featured Product",
+"settings": [
+  {
+   "type": "product",
+    "id" : "product_featured",
+    "label" : "Featured Product"
+  },
+  {
+   "type": "text",
+   "label" : "Featured title 1",
+   "id" : "featured_title_1",
+  "default": "Shooting Stars"
+  },
+  {
       "type": "text",
-      "id": "heading",
-      "default": "Multimedia collage",
-      "label": "t:sections.collage.settings.heading.label"
-    },
-    {
-      "type": "select",
-      "id": "desktop_layout",
-      "options": [
-        {
-          "value": "left",
-          "label": "t:sections.collage.settings.desktop_layout.options__1.label"
-        },
-        {
-          "value": "right",
-          "label": "t:sections.collage.settings.desktop_layout.options__2.label"
-        }
-      ],
-      "default": "left",
-      "label": "t:sections.collage.settings.desktop_layout.label"
-    },
-    {
-      "type": "select",
-      "id": "mobile_layout",
-      "options": [
-        {
-          "value": "collage",
-          "label": "t:sections.collage.settings.mobile_layout.options__1.label"
-        },
-        {
-          "value": "column",
-          "label": "t:sections.collage.settings.mobile_layout.options__2.label"
-        }
-      ],
-      "default": "collage",
-      "label": "t:sections.collage.settings.mobile_layout.label"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.all.padding.section_padding_heading"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "t:sections.all.padding.padding_top",
-      "default": 36
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "t:sections.all.padding.padding_bottom",
-      "default": 36
-    }
-  ],
-  "blocks": [
-    {
-      "type": "image",
-      "name": "t:sections.collage.blocks.image.name",
-      "settings": [
-        {
-          "type": "image_picker",
-          "id": "image",
-          "label": "t:sections.collage.blocks.image.settings.image.label"
-        },
-        {
-          "type": "checkbox",
-          "id": "image_padding",
-          "default": false,
-          "label": "t:sections.collage.blocks.image.settings.image_padding.label",
-          "info": "t:sections.collage.blocks.image.settings.image_padding.info"
-        }
-      ]
-    },
-    {
-      "type": "product",
-      "name": "t:sections.collage.blocks.product.name",
-      "settings": [
-        {
-          "type": "product",
-          "id": "product",
-          "label": "t:sections.collage.blocks.product.settings.product.label"
-        },
-        {
-          "type": "checkbox",
-          "id": "second_image",
-          "default": false,
-          "label": "t:sections.collage.blocks.product.settings.second_image.label"
-        }
-      ]
-    },
-    {
-      "type": "collection",
-      "name": "t:sections.collage.blocks.collection.name",
-      "settings": [
-        {
-          "type": "collection",
-          "id": "collection",
-          "label": "t:sections.collage.blocks.collection.settings.collection.label"
-        }
-      ]
-    },
-    {
-      "type": "video",
-      "name": "t:sections.collage.blocks.video.name",
-      "settings": [
-        {
-          "type": "image_picker",
-          "id": "cover_image",
-          "label": "t:sections.collage.blocks.video.settings.cover_image.label"
-        },
-        {
-          "type": "video_url",
-          "id": "video_url",
-          "accept": [
-            "youtube",
-            "vimeo"
-          ],
-          "default": "https:\/\/www.youtube.com\/watch?v=_9VUPq3SxOc",
-          "label": "t:sections.collage.blocks.video.settings.video_url.label",
-          "placeholder": "t:sections.collage.blocks.video.settings.video_url.placeholder",
-          "info": "t:sections.collage.blocks.video.settings.video_url.info"
-        },
-        {
-          "type": "text",
-          "id": "description",
-          "default": "Describe the video",
-          "label": "t:sections.collage.blocks.video.settings.description.label",
-          "info": "t:sections.collage.blocks.video.settings.description.info"
-        },
-        {
-          "type": "checkbox",
-          "id": "image_padding",
-          "default": false,
-          "label": "t:sections.collage.blocks.video.settings.image_padding.label",
-          "info": "t:sections.collage.blocks.video.settings.image_padding.info"
-        }
-      ]
-    }
-  ],
-  "max_blocks": 3,
-  "presets": [
-    {
-      "name": "t:sections.collage.presets.name",
-      "blocks": [
-        {
-          "type": "video"
-        },
-        {
-          "type": "product"
-        },
-        {
-          "type": "collection"
-        }
-      ]
-    }
+      "label" : "Featured Description 1",
+     "default": "Blue bottle crucifix vinyl post-ironic four dollar toast vegan taxidermy. Gastropub indxgo juice poutine.",
+     "id" : "featured_description_1"
+  },
+  {
+   "type": "text",
+   "label" : "Featured title 2",
+   "id" : "featured_title_2",
+   "default": "Shooting Stars"
+  },
+  {
+      "type": "text",
+      "label" : "Featured Description 2",
+    "default": "Blue bottle crucifix vinyl post-ironic four dollar toast vegan taxidermy. Gastropub indxgo juice poutine.",
+    "id" : "featured_description_2"
+  },
+  {
+   "type": "text",
+   "label" : "Featured title 3",
+   "id" : "featured_title_3",
+   "default": "Shooting Stars"
+  },
+  {
+   "type": "text",
+   "label" : "Featured Description 3",
+   "default": "Blue bottle crucifix vinyl post-ironic four dollar toast vegan taxidermy. Gastropub indxgo juice poutine.",
+   "id" : "featured_description_3"
+  }
   ]
 }
 {% endschema %}
