@@ -1,36 +1,43 @@
 <section class="text-gray-600 body-font">
   <div class="container px-5 py-24 mx-auto">
+    <h2 class="font-bold p-4 text-center font-large">{{ section.settings.main-heading }}</h2>
     <div class="flex flex-wrap -m-4 justify-evenly">
-      <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
-        <a class="block relative h-48 rounded overflow-hidden">
-          <img alt="ecommerce" class="object-cover object-center w-full h-full block" src="https://dummyimage.com/420x260">
-        </a>
-        <div class="mt-4">
-          <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
-          <h2 class="text-gray-900 title-font text-lg font-medium">The Catalyzer</h2>
-          <p class="mt-1">$17.00</p>
-        </div>
-      </div>
-      <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
-        <a class="block relative h-48 rounded overflow-hidden">
-          <img alt="ecommerce" class="object-cover object-center w-full h-full block" src="https://dummyimage.com/421x261">
-        </a>
-        <div class="mt-4">
-          <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
-          <h2 class="text-gray-900 title-font text-lg font-medium">Shooting Stars</h2>
-          <p class="mt-1">$21.15</p>
-        </div>
-      </div>
-      <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
-        <a class="block relative h-48 rounded overflow-hidden">
-          <img alt="ecommerce" class="object-cover object-center w-full h-full block" src="https://dummyimage.com/422x262">
-        </a>
-        <div class="mt-4">
-          <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
-          <h2 class="text-gray-900 title-font text-lg font-medium">Neptune</h2>
-          <p class="mt-1">$12.00</p>
-        </div>
-      </div>
+      {% for product in section.settings.featured_collection.products limit: section.settings.number_of_products_to_show %}
+        {% render 'card-collection', product_product: product %}
+      {% endfor %}
     </div>
   </div>
 </section>
+
+
+{% schema %}
+{
+    "name": "Featured Collection",
+    "settings": [
+        {
+            "type": "text",
+            "id": "main-heading",
+            "default": "Featured Collection",
+            "label": "Title"
+        },
+        {
+            "type": "collection",
+            "id": "featured_collection",
+            "label": "Collection"
+        },
+        {
+            "type": "range",
+            "id": "number_of_products_to_show",
+            "min": 4,
+            "max": 12,
+            "default": 4,
+            "label": "Number of products to show"
+        }
+    ],
+    "presets": [
+        {
+            "name": "Featured Collection"
+        }
+    ]
+}
+{% endschema %}

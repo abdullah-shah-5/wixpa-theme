@@ -1,13 +1,23 @@
+<style>
+  form{
+    width: 50% ;
+  }
+  .color_button_product{
+    color: {{ section.settings.button_color }};
+    background-color: {{ section.settings.button-bg-color }};
+  }
+  
+</style>
 <section class="text-gray-600 body-font overflow-hidden">
-  <div class="container px-5 py-24 mx-auto">
-    <div class="lg:w-4/5 mx-auto flex flex-wrap">
+  <div class=" px-5 py-24 mx-auto">
+    <div class=" mx-auto flex flex-wrap">
       {% for media in product.media %}
       <div class="h-100 overflow-hidden p-2">
           {% render 'product-media', media: media %}
       </div>
   {% endfor %}
   {% form 'product', product %}
-      <div class="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
+      <div class=" w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
         <h2 class="text-sm title-font text-gray-500 tracking-widest">{{ product.vendor }}</h2>
         <h1 class="text-gray-900 text-3xl title-font font-medium mb-1">{{ product.title }}</h1>
         <div class="flex mb-4">
@@ -75,7 +85,7 @@
         <div class="flex">
           {% assign product_price = product.selected_or_first_available_variant %}
           <span class="title-font font-medium text-2xl text-gray-900">{{ product_price.price | money }}</span>
-          <button class="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded   
+          <button class="flex ml-auto color_button_product border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded   
           {% if product.selected_or_first_available_variant == false %}
                             disabled
                         {% endif %}">
@@ -108,6 +118,18 @@
    "id" : "buy-now",
    "label" : "Buy now button",
   "default": "Buy Now"
+  },
+  {
+   "type": "color",
+   "id":  "button-color",
+   "label" : "Add to cart color",
+  "default": "#ccc"
+  },
+  {
+   "type": "color",
+   "id" : "button-bg-color",
+   "label" : "Add to cart bg color",
+  "default": "#ff4500"
   }
 ]
 }
