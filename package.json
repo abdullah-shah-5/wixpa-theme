@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "tailwindcss": "^3.0.13"
+  },
+  "dependencies": {
+    "swiper": "^7.4.1"
   }
 }

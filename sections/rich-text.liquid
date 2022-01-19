@@ -1,11 +1,20 @@
-<section class="text-gray-600 body-font">
+<section class="custom_color_rich body-font">
   <div class="container px-5 py-24 mx-auto">
     <div class="lg:w-2/3 flex flex-col sm:flex-row sm:items-center items-start mx-auto">
-      <h1 class="flex-grow sm:pr-16 text-2xl font-medium title-font text-gray-900">{{ section.settings.rich-main-text }}.</h1>
-      <button class="flex-shrink-0 text-white border-0 bg-gray-900 py-2 px-8 focus:outline-none rounded text-lg mt-10 sm:mt-0">{{ section.settings.rich-button-text }}</button>
+      <h1 class="flex-grow sm:pr-16 text-2xl font-medium title-font ">{{ section.settings.rich-main-text }}.</h1>
+      <button class="flex-shrink-0 text-white border-0  bg-gray-900 py-2 px-8 focus:outline-none rounded-full text-lg mt-10 sm:mt-0">{{ section.settings.rich-button-text }}</button>
     </div>
   </div>
 </section>
+
+<style>
+
+  .custom_color_rich{
+    color: {{ section.settings.color }};
+    background-color : {{ section.settings.bg-color }};
+
+  }
+</style>
 
 {% schema %}
 {
@@ -22,6 +31,18 @@
     "default": "Shop Now",
     "id" : "rich-button-text",
     "label" : "Rich Button Text"
+  },
+  {
+   "type": "color",
+    "default": "#ffffff",
+    "id" : "color",
+    "label" : "Text Color"
+  },
+  {
+   "type": "color",
+    "default": "#db2777",
+    "id" : "bg-color",
+    "label" : "Background Color"
   }
 ]
   

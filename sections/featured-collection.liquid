@@ -1,9 +1,9 @@
 <section class="text-gray-600 body-font">
   <div class="container px-5 py-24 mx-auto">
-    <h2 class="font-bold p-4 text-center font-large">{{ section.settings.main-heading }}</h2>
+    <h2 class="font-extrabold p-4 text-center text-5xl">{{ section.settings.main-heading }}</h2>
     <div class="flex flex-wrap -m-4 justify-evenly">
       {% for product in section.settings.featured_collection.products limit: section.settings.number_of_products_to_show %}
-        {% render 'card-collection', product_product: product %}
+        {% render 'card-collection', product_product: product, class : "card-collection-class" %}
       {% endfor %}
     </div>
   </div>

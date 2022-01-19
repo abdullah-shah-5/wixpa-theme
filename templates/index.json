@@ -1,5 +1,27 @@
 {
   "sections": {
+    "hero-section" : {
+      "type": "image-banner"
+    },
+    "text" : {
+      "type": "rich-text"
+    },
+    "features": {
+      "type": "collage"
+    },
+    "template" :{
+      "type": "multicolumn"
+    },
+    "list-collection-template": {
+      "type": "featured-collection"
+    },
+    "video-template":{
+      "type": "video"
+    },
+    "email-signup":{
+      "type" : "newsletter"
+    }
 
-}
+},
+"order":["hero-section" , "text" , "features" ,"template","list-collection-template", "video-template","email-signup"] 
 }

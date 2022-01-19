@@ -7,7 +7,9 @@
       {% endif %}
   </a>
    <div class="flex md:order-2 items-center">
+     <a id="search-icon" class="cursor-pointer">
     {% render 'icon-search' %}
+    </a>
     {% if shop.customer_accounts_enabled %}
     {% if customer %}
       <a href="/account">
@@ -48,6 +50,41 @@
   </div>
   </div>
 </nav>
+
+<div class="modal h-full w-full fixed left-0 top-0 flex justify-center items-center flex-col bg-white/90 hidden cursor-pointer z-10 transition-transform">
+  <p id="close_modal" class="absolute top-0 right-0 font-bold bg-slate-600 rounded-md py-2 px-3 text-3xl text-white m-4">&times;</p>
+
+  <div class="w-2/3">
+    <input type="text" placeholder="Search this store" class="border border-slate-800 py-2 px-4 w-full outline-none rounded-md"> 
+  </div>
+
+
+</div>
+
+
+
+
+<script>
+  const modal = document.querySelector('.modal');
+  document.querySelector('#search-icon').addEventListener('click' , function(){
+    if(modal.classList.contains('hidden')){
+      modal.classList.remove('hidden');
+    }
+    else if( !modal.classList.contains('hidden')){
+      modal.classList.add('hidden');
+    }
+  })
+
+  const modalClose = document.querySelector('#close_modal');
+  modalClose.addEventListener('click' , function(){
+    modal.classList.add('hidden');
+  })
+</script>
+
+
+
+
+
 {% schema %}
 {
  "name": "Header Settings",

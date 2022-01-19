@@ -25,7 +25,7 @@
                   </div>
               </div>
           {% when 'featured_image' %}
-              <div class="max-w-7xl bg-blue-100 rounded-lg mx-2 md:mx-auto overflow-hidden my-4">
+              <div class="max-w-7xl flex justify-center rounded-lg mx-2 md:mx-auto overflow-hidden my-4">
                   {% if article.image != blank %}
                       <img class="w-70 h-80 md:h-96 object-cover object-center" src="{{ article.image | img_url: 'large'}}" alt="{{ article.image.alt }}">
                   {% else %}
