@@ -1,27 +1,16 @@
-<div class="px-4 py-8">
-    
 
+<ul class="grid grid-cols-3 p-10 justify-center">
+  {% for collections in collections %}
+  <li class="card bg-pink-600 rounded-lg p-8 m-4 w-3/4 h-auto">
+    <a href="{{ collections.url }}">
+    <img src="{{ collections.featured_image.src | image_url }}" class="rounded-lg" alt="">
+    <div>
+      <p class="font-bold text-3xl text-white text-center my-2">{{ collections.title }}</p>
+    </div>
+  </a>
+  </li>
+  
+{% endfor %}
 
-        <h1 class="text-3xl text-center">{{ section.settings.list-collection.title }}</h1>
-        <p>{{   section.settings.list-collection.all_products_count }}</p>
+</ul>
 
-    
-
-     
-          </div>
-      </div>
-</div>
-
-{% schema %}
-{
-   "name": "main list collection",
-   "settings":[
-    {
-       "type": "collection",
-       "label":"Choose Collection",
-       "id" : "list-collection",
-      "default": "all",
-    }
-   ]
-}
-{% endschema %}

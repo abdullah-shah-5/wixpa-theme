@@ -51,12 +51,37 @@
   </div>
 </nav>
 
+{{ 'predictive-search.js' | asset_url | script_tag }}
+
 <div class="modal h-full w-full fixed left-0 top-0 flex justify-center items-center flex-col bg-white/90 hidden cursor-pointer z-10 transition-transform">
   <p id="close_modal" class="absolute top-0 right-0 font-bold bg-slate-600 rounded-md py-2 px-3 text-3xl text-white m-4">&times;</p>
-
+<form action="{{ routes.search_url }}">
   <div class="w-2/3">
-    <input type="text" placeholder="Search this store" class="border border-slate-800 py-2 px-4 w-full outline-none rounded-md"> 
+    <input type="search" name="q" placeholder="Search this store" class="border border-slate-800 py-2 px-4 w-full outline-none rounded-md"
+    {%- if settings.predictive_search_enabled -%}
+    role="combobox"
+    aria-expanded="false"
+    aria-owns="predictive-search-results-list"
+    aria-controls="predictive-search-results-list"
+    aria-haspopup="listbox"
+    aria-autocomplete="list"
+    autocorrect="off"
+    autocomplete="off"
+    autocapitalize="off"
+    spellcheck="false"
+  {%- endif -%}
+  > 
+  <input name="options[prefix]" type="hidden" value="last">
+  {%- if settings.predictive_search_enabled -%}
+  <div id="predictive-search" tabindex="-1"></div>
+{%- endif -%}
+    <span>
+      <button type="submit">
+        {% render  'icon-search'%}
+      </button>
+    </span>
   </div>
+</form>
 
 
 </div>
