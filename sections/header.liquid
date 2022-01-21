@@ -1,3 +1,64 @@
+
+<style>
+  .search_span{
+    right: 13%;
+  }
+  #cart-modal.hidden{
+    opacity: 0;
+    -webkit-animation: slide-left 1s;
+    animation: slide-left 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+  }
+  @-webkit-keyframes slide-left {
+  0% {
+    -webkit-transform: translateX(0);
+            transform: translateX(0);
+  }
+  100% {
+    -webkit-transform: translateX(-100px);
+            transform: translateX(-60px);
+  }
+}
+@keyframes slide-left {
+  0% {
+    -webkit-transform: translateX(0);
+            transform: translateX(100px);
+  }
+  100% {
+    -webkit-transform: translateX(-100px);
+            transform: translateX(0px);
+  }
+}
+@-webkit-keyframes slide-right {
+  0% {
+    -webkit-transform: translateX(0);
+            transform: translateX(0);
+  }
+  100% {
+    -webkit-transform: translateX(100px);
+            transform: translateX(100px);
+  }
+}
+@keyframes slide-right {
+  0% {
+    -webkit-transform: translateX(0);
+            transform: translateX(0);
+  }
+  100% {
+    -webkit-transform: translateX(100px);
+            transform: translateX(500px);
+  }
+}
+
+
+  .animate_card{
+    opacity: 1;
+    animation: slide-left 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both !important;
+  }
+  .animate_card_right{
+    -webkit-animation: slide-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+	        animation: slide-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+  } 
+</style>
 <nav class="bg-pink-600 text-white  border-gray-200 px-2 sm:px-4 py-2.5 rounded dark:bg-gray-800">
   <div class="container flex flex-wrap justify-between items-center mx-auto">
   <a href="{{ shop.url }}" class="flex">
@@ -9,6 +70,9 @@
    <div class="flex md:order-2 items-center">
      <a id="search-icon" class="cursor-pointer">
     {% render 'icon-search' %}
+    </a>
+    <a id="cart_icon">
+      {% render 'icon-cart' %}
     </a>
     {% if shop.customer_accounts_enabled %}
     {% if customer %}
@@ -55,9 +119,9 @@
 
 <div class="modal h-full w-full fixed left-0 top-0 flex justify-center items-center flex-col bg-white/90 hidden cursor-pointer z-10 transition-transform">
   <p id="close_modal" class="absolute top-0 right-0 font-bold bg-slate-600 rounded-md py-2 px-3 text-3xl text-white m-4">&times;</p>
-<form action="{{ routes.search_url }}">
-  <div class="w-2/3">
-    <input type="search" name="q" placeholder="Search this store" class="border border-slate-800 py-2 px-4 w-full outline-none rounded-md"
+<form class="w-full flex justify-center " action="{{ routes.search_url }}">
+  <div class="w-3/4 flex items-center">
+    <input type="search" name="q" placeholder="Search this store" class="border border-slate-800 relative py-2 px-4 w-full outline-none rounded-md"
     {%- if settings.predictive_search_enabled -%}
     role="combobox"
     aria-expanded="false"
@@ -71,23 +135,99 @@
     spellcheck="false"
   {%- endif -%}
   > 
-  <input name="options[prefix]" type="hidden" value="last">
-  {%- if settings.predictive_search_enabled -%}
-  <div id="predictive-search" tabindex="-1"></div>
-{%- endif -%}
-    <span>
+    <span class="absolute search_span">
       <button type="submit">
         {% render  'icon-search'%}
       </button>
     </span>
   </div>
+  <input name="options[prefix]" type="hidden" value="last">
+  {%- if settings.predictive_search_enabled -%}
+  <div id="predictive-search" tabindex="-1"></div>
+{%- endif -%}
 </form>
 
 
 </div>
+<div id="cart-modal" class="fixed inset-0 hidden overflow-hidden z-20" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
+  <div class="absolute inset-0 overflow-hidden">
+    <div class="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+    <div class="fixed inset-y-0 right-0 pl-10 max-w-full flex card_translate">
+      <div class="w-screen max-w-md">
+        <div class="h-full flex flex-col bg-white shadow-xl overflow-y-scroll">
+          <div class="flex-1 py-6 overflow-y-auto px-4 sm:px-6">
+            <div class="flex items-start justify-between">
+              <h2 class="text-lg font-medium text-gray-900" id="slide-over-title">
+                Shopping cart
+              </h2>
+              <div class="ml-3 h-7 flex items-center" id="close-cart">
+                <button type="button" class="-m-2 p-2 text-gray-400 hover:text-gray-500">
+                  <span class="sr-only" >Close panel</span>
+                  <!-- Heroicon name: outline/x -->
+                  <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="mt-8">
+              <div class="flow-root">
+                <ul role="list" class="-my-6 divide-y divide-gray-200">
+                  <li class="py-6 flex">
+                    <div class="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md overflow-hidden" id="ajax-cart-product-image">
+                      <!-- <img src="https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg" alt="Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt." class="w-full h-full object-center object-cover"> -->
+                    </div>
 
+                    <div class="ml-4 flex-1 flex flex-col">
+                      <div>
+                        <div class="flex justify-between text-base font-medium text-gray-900">
+                          <h3 id="ajax-cart-product-title">
+                            <a href="#">
+                              Throwback Hip Bag
+                            </a>
+                          </h3>
+                          <p class="ml-4" id="ajax-cart-product-price">
+                            $90.00
+                          </p>
+                        </div>
+                        <p class="mt-1 text-sm text-gray-500" id="ajax-cart-product-variant">
+                          Salmon
+                        </p>
+                      </div>
+                      <div class="flex-1 flex items-end justify-between text-sm">
+                        <p class="text-gray-500" id="ajax-cart-product-quantity">
+                          Qty 1
+                        </p>
 
+                        <div class="flex">
+                          <button type="button" class="font-medium text-indigo-600 hover:text-indigo-500">Remove</button>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
 
+       
+                  <!-- More products... -->
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="border-t border-gray-200 py-6 px-4 sm:px-6">
+            <div class="flex justify-between text-base font-medium text-gray-900">
+              <p>Subtotal</p>
+              <p>$262.00</p>
+            </div>
+            <p class="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
+            <div class="mt-6">
+              <a href="#" class="flex justify-center items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700">Checkout</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
   const modal = document.querySelector('.modal');
@@ -97,13 +237,65 @@
     }
     else if( !modal.classList.contains('hidden')){
       modal.classList.add('hidden');
+
     }
   })
-
   const modalClose = document.querySelector('#close_modal');
   modalClose.addEventListener('click' , function(){
     modal.classList.add('hidden');
   })
+  const cart_modal = document.getElementById('cart-modal');
+  const cart_icon = document.getElementById("cart_icon");
+  const cart_card = document.querySelector('.card_translate');
+  const close_cart = document.getElementById('close-cart');
+  const closingCart = () => {
+    console.log('close clicked')
+    cart_card.classList.remove('animate_card');
+    cart_card.style.animation = "slide-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both";
+    setTimeout( ()=>{
+      cart_modal.classList.add('hidden');
+      console.log('hello')
+    } ,500 )
+  }
+  cart_icon.addEventListener('click' ,()=>{
+    cart_modal.addEventListener('click' ,  function(e) {
+      console.log('cart modal clicked');
+      if (!e.target.classList.contains('card_translate')) {
+        console.log('body-clicked')
+        closingCart();
+    }})
+    if(cart_modal.classList.contains('hidden')){
+    cart_card.style.animation = "unset";
+      cart_card.classList.add('animate_card');
+      cart_modal.classList.remove('hidden');
+    }
+    else{
+      cart_modal.classList.add('hidden');
+    }
+  });
+  close_cart.addEventListener('click' , closingCart);
+
+
+
+// **********AJAX CART DRAWER CODE**********
+
+var cartContents = fetch('/cart.js')
+  .then(response => response.json())
+  .then(data => { 
+    data.items.forEach((product, index)=>{
+     const productImage = document.getElementById('ajax-cart-product-image');
+     const productTitle = document.getElementById('ajax-cart-product-title');
+     
+      productImage.innerHTML = `<a href="${product.title}"></a>`
+
+    })
+    return data })
+  .catch( (err)=>{
+    console.log(`Error : ${err}`)
+  } );
+
+
+
 </script>
 
 
