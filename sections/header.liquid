@@ -172,42 +172,7 @@
             </div>
             <div class="mt-8">
               <div class="flow-root">
-                <ul role="list" class="-my-6 divide-y divide-gray-200">
-                  <li class="py-6 flex">
-                    <div class="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md overflow-hidden" id="ajax-cart-product-image">
-                      <!-- <img src="https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg" alt="Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt." class="w-full h-full object-center object-cover"> -->
-                    </div>
-
-                    <div class="ml-4 flex-1 flex flex-col">
-                      <div>
-                        <div class="flex justify-between text-base font-medium text-gray-900">
-                          <h3 id="ajax-cart-product-title">
-                            <a href="#">
-                              Throwback Hip Bag
-                            </a>
-                          </h3>
-                          <p class="ml-4" id="ajax-cart-product-price">
-                            $90.00
-                          </p>
-                        </div>
-                        <p class="mt-1 text-sm text-gray-500" id="ajax-cart-product-variant">
-                          Salmon
-                        </p>
-                      </div>
-                      <div class="flex-1 flex items-end justify-between text-sm">
-                        <p class="text-gray-500" id="ajax-cart-product-quantity">
-                          Qty 1
-                        </p>
-
-                        <div class="flex">
-                          <button type="button" class="font-medium text-indigo-600 hover:text-indigo-500">Remove</button>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-
-       
-                  <!-- More products... -->
+                <ul role="list" class="-my-6 divide-y divide-gray-200" id="ajax-cart-ul">
                 </ul>
               </div>
             </div>
@@ -216,7 +181,7 @@
           <div class="border-t border-gray-200 py-6 px-4 sm:px-6">
             <div class="flex justify-between text-base font-medium text-gray-900">
               <p>Subtotal</p>
-              <p>$262.00</p>
+              <p id="ajax_total_price"></p>
             </div>
             <p class="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
             <div class="mt-6">
@@ -282,18 +247,23 @@
 var cartContents = fetch('/cart.js')
   .then(response => response.json())
   .then(data => { 
+    console.log(data)
     data.items.forEach((product, index)=>{
-     const productImage = document.getElementById('ajax-cart-product-image');
-     const productTitle = document.getElementById('ajax-cart-product-title');
-     
-      productImage.innerHTML = `<a href="${product.title}"></a>`
-
+      const productLi = document.createElement('li');
+      productLi.className = 'py-6 flex'
+      productLi.innerHTML = ` <div class="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md overflow-hidden" id="ajax-cart-product-image"> <img src="${product.featured_image.url}" alt="error loading image"> </div><div class="ml-4 flex-1 flex flex-col"> <div> <div class="flex justify-between text-base font-medium text-gray-900"> <h3 id="ajax-cart-product-title"> <a href="${product.url}"> ${product.title} </a> </h3> <p class="ml-4" id="ajax-cart-product-price"> ${parseFloat(product.line_price)} </p></div><p class="mt-1 text-sm text-gray-500" id="ajax-cart-product-variant"> Salmon </p></div><div class="flex-1 flex items-end justify-between text-sm"> <p class="text-gray-500" id="ajax-cart-product-quantity"> Qty ${product.quantity} </p><div class="flex"> <button type="button" class="font-medium text-indigo-600 hover:text-indigo-500">Remove</button> </div></div></div>` 
+      const parentUl = document.querySelector('#ajax-cart-ul');
+      parentUl.appendChild(productLi);
     })
+    const totalPrice = document.querySelector('#ajax_total_price');
+    totalPrice.innerHTML = data.total_price;
     return data })
   .catch( (err)=>{
     console.log(`Error : ${err}`)
   } );
 
+
+  console.log(accounting.toFixed(0.615, 2))
 
 
 </script>
