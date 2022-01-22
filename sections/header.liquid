@@ -251,19 +251,18 @@ var cartContents = fetch('/cart.js')
     data.items.forEach((product, index)=>{
       const productLi = document.createElement('li');
       productLi.className = 'py-6 flex'
-      productLi.innerHTML = ` <div class="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md overflow-hidden" id="ajax-cart-product-image"> <img src="${product.featured_image.url}" alt="error loading image"> </div><div class="ml-4 flex-1 flex flex-col"> <div> <div class="flex justify-between text-base font-medium text-gray-900"> <h3 id="ajax-cart-product-title"> <a href="${product.url}"> ${product.title} </a> </h3> <p class="ml-4" id="ajax-cart-product-price"> ${parseFloat(product.line_price)} </p></div><p class="mt-1 text-sm text-gray-500" id="ajax-cart-product-variant"> Salmon </p></div><div class="flex-1 flex items-end justify-between text-sm"> <p class="text-gray-500" id="ajax-cart-product-quantity"> Qty ${product.quantity} </p><div class="flex"> <button type="button" class="font-medium text-indigo-600 hover:text-indigo-500">Remove</button> </div></div></div>` 
+      productLi.innerHTML = ` <div class="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md overflow-hidden" id="ajax-cart-product-image"> <img src="${product.featured_image.url}" alt="error loading image"> </div><div class="ml-4 flex-1 flex flex-col"> <div> <div class="flex justify-between text-base font-medium text-gray-900"> <h3 id="ajax-cart-product-title"> <a href="${product.url}"> ${product.title} </a> </h3> <p class="ml-4" id="ajax-cart-product-price"> fff </p></div><p class="mt-1 text-sm text-gray-500" id="ajax-cart-product-variant"> Salmon </p></div><div class="flex-1 flex items-end justify-between text-sm"> <p class="text-gray-500" id="ajax-cart-product-quantity"> Qty ${product.quantity} </p><div class="flex"> <button type="button" class="font-medium text-indigo-600 hover:text-indigo-500">Remove</button> </div></div></div>` 
       const parentUl = document.querySelector('#ajax-cart-ul');
       parentUl.appendChild(productLi);
+      console.log(Shopify.formatMoney(product.line_price));
+
     })
     const totalPrice = document.querySelector('#ajax_total_price');
-    totalPrice.innerHTML = data.total_price;
+    totalPrice.innerHTML = accounting.formatMoney(parseInt(data.totalPrice),[symbol = "$"],[precision = 2],[thousand = ","],[decimal = "."],[format = "%s%v"]);
     return data })
   .catch( (err)=>{
     console.log(`Error : ${err}`)
   } );
-
-
-  console.log(accounting.toFixed(0.615, 2))
 
 
 </script>
