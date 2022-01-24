@@ -173,6 +173,48 @@
             <div class="mt-8">
               <div class="flow-root">
                 <ul role="list" class="-my-6 divide-y divide-gray-200" id="ajax-cart-ul">
+                  <form action="/cart" method="post" vovalidate>
+                    {% for item in cart.items %}
+                      <li class="py-6 flex">
+                        <div class="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md overflow-hidden">
+                          <img src="{{ item | image_url  }}" alt="Front of satchel with blue canvas body, black straps and handle, drawstring top, and front zipper pouch." class="w-full h-full object-center object-cover">
+                        </div>
+                        <div class="ml-4 flex-1 flex flex-col">
+                          <div>
+                            <div class="flex justify-between text-base font-medium text-gray-900">
+                              <h3>
+                                <p class="my-1 text-sm text-gray-500">
+                                  {{ item.vendor }}
+                                </p>
+                                <a href="{{ item.url }}">
+                                    {{ item.title }}
+                                </a>
+                              </h3>
+                              <p class="ml-4">
+                                {{ item.price | money }}
+                              </p>
+                            </div>
+                         
+                          </div>
+                          <div class="flex-1 flex items-end justify-between text-sm my-2">
+                            <span class="text-gray-500 w-1/3">
+                              <button class="text-sm text-black font-bold" role="button" type="button" data-variant="{{ item.variant.id }}">-</button>
+                              <input class="w-1/4" type="number" disabled name="updates[]" id="updates_{{ item.key }}" value="{{ item.quantity }}" min="1" />
+                              <button class="text-sm text-black font-bold" role="button" type="button" data-variant="{{ item.variant.id }}">+</button>
+                            </span>
+                            <span class=" text-gray-500 w-1/3" >
+                              {{ item.variant.title }}
+                            </span>
+                            <div class="flex w-1/3">
+                              <button type="button" class="font-medium text-indigo-600 hover:text-indigo-500">Remove</button>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                    {% endfor %}
+
+
+                  </form>
                 </ul>
               </div>
             </div>
@@ -249,16 +291,16 @@ var cartContents = fetch('/cart.js')
   .then(data => { 
     console.log(data)
     data.items.forEach((product, index)=>{
-      const productLi = document.createElement('li');
-      productLi.className = 'py-6 flex'
-      productLi.innerHTML = ` <div class="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md overflow-hidden" id="ajax-cart-product-image"> <img src="${product.featured_image.url}" alt="error loading image"> </div><div class="ml-4 flex-1 flex flex-col"> <div> <div class="flex justify-between text-base font-medium text-gray-900"> <h3 id="ajax-cart-product-title"> <a href="${product.url}"> ${product.title} </a> </h3> <p class="ml-4" id="ajax-cart-product-price"> fff </p></div><p class="mt-1 text-sm text-gray-500" id="ajax-cart-product-variant"> Salmon </p></div><div class="flex-1 flex items-end justify-between text-sm"> <p class="text-gray-500" id="ajax-cart-product-quantity"> Qty ${product.quantity} </p><div class="flex"> <button type="button" class="font-medium text-indigo-600 hover:text-indigo-500">Remove</button> </div></div></div>` 
-      const parentUl = document.querySelector('#ajax-cart-ul');
-      parentUl.appendChild(productLi);
-      console.log(Shopify.formatMoney(product.line_price));
+      // const productLi = document.createElement('li');
+      // productLi.className = 'py-6 flex'
+      // productLi.innerHTML = ` <div class="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md overflow-hidden" id="ajax-cart-product-image"> <img src="${product.featured_image.url}" alt="error loading image"> </div><div class="ml-4 flex-1 flex flex-col"> <div> <div class="flex justify-between text-base font-medium text-gray-900"> <h3 id="ajax-cart-product-title"> <a href="${product.url}"> ${product.title} </a> </h3> <p class="ml-4" id="ajax-cart-product-price"> ${Shopify.formatMoney(product.line_price)} </p></div><p class="mt-1 text-sm text-gray-500" id="ajax-cart-product-variant"> Salmon </p></div><div class="flex-1 flex items-end justify-between text-sm"> <p class="text-gray-500" id="ajax-cart-product-quantity"> Qty ${product.quantity} </p><div class="flex"> <a href="/cart/change?l&quantity=0" class="font-medium text-indigo-600 hover:text-indigo-500">Remove</a> </div></div></div>` 
+      // const parentUl = document.querySelector('#ajax-cart-ul');
+      // parentUl.appendChild(productLi);
+      // console.log(Shopify.formatMoney(product.line_price));
 
     })
     const totalPrice = document.querySelector('#ajax_total_price');
-    totalPrice.innerHTML = accounting.formatMoney(parseInt(data.totalPrice),[symbol = "$"],[precision = 2],[thousand = ","],[decimal = "."],[format = "%s%v"]);
+    totalPrice.innerHTML = '';
     return data })
   .catch( (err)=>{
     console.log(`Error : ${err}`)
