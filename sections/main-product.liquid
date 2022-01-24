@@ -5,9 +5,117 @@
     .swiper-button-prev::after, .swiper-button-next::after { font-size: 20px; }
     .swiper-pagination { color: black; bottom: 25px !important; }
     .swiper-pagination-bullet-active { background: black !important; }
+    .modal {
+   max-width: 575px;
+   background: white;
+   border: 5px solid #111;
+   padding: 50px 65px;
+   position: fixed;
+   z-index: 1000;
+}
+.modal .close {
+   position: absolute;
+   top: 10px;
+   right: 20px;
+   font-size: 20px;
+   cursor: pointer;
+}
+.modal--overlay {
+   position: fixed;
+   top: 0;
+   bottom: 0;
+   left: 0;
+   right: 0;
+   z-index: 100;
+   background-color: rgba(0, 0, 0, 0.4);
+}
+.hidden {
+   display: none;
+}
     .product--information { height: fit-content; }
 </style>
 {{ 'jquery.min.js' | asset_url | script_tag }}
+<script>
+  var cartCount = {{ cart.item_count }};
+
+$(document).ready(function(){   
+
+
+   $('.modal--overlay').on('click', function(){
+      var overlay = $('.modal--overlay')
+      closeModal2(overlay)
+    })
+});
+
+function addItem(form_id) {
+   $.ajax({
+      type: 'POST', 
+      url: '/cart/add.js',
+      dataType: 'json', 
+      data: $('#'+form_id).serialize(),
+      beforeSend : function () {
+        $('#addToCartBtn').text(' <svg class="animate-spin h-5 w-5 mr-3 ..." viewBox="0 0 24 24"><!-- ... --></svg>Processing...')
+      },
+      success: addToCartOk,
+      error: addToCartFail
+    });
+}
+
+function addToCartOk(product) { 
+   cartCount++; 
+   $('#addToCartBtn').text('Added Successfully');
+   setTimeout(function() { 
+   $('#addToCartBtn').html(' {% if product.selected_or_first_available_variant.available == false %}  Sold out{% else %} Add to cart {% endif %} ');
+
+    }, 6000);
+
+   $('.modal').html('<span class="close" onclick="closeModal2()" id="close">✕</span>' + product.title + ' was added to the cart!');    
+   openModal();
+} 
+
+function addToCartFail(obj, status) { 
+    $('.modal').html('<span class="close" id="close">✕</span> The product you are trying to add is out of stock.'); 
+   openModal()
+ } 
+
+//Modal Actions
+//center modal based on window size
+function centerModal(){
+   var modal = $('.modal.open');
+   var mWidth = modal.outerWidth()
+   var mHeight = modal.outerHeight();
+   var width = $(window).width();
+   var height = $(window).height();
+   if((width % 1) != 0){
+      width = Math.round(width)
+    }
+   if((height % 1) != 0){
+      height = Math.round(height)
+   }
+   var topPos = (height / 2) - (mHeight / 2);
+   var leftPos = (width / 2) - (mWidth / 2);
+   modal.css({top: topPos, left:leftPos})
+
+ }
+
+//open modal and overlay
+function openModal(){
+   $('.modal').removeClass('hidden').addClass('open');
+   $('.modal--overlay').removeClass('hidden').addClass('open');
+   $('body').css('overflow', 'hidden');
+   centerModal();
+}
+
+//close modal and overlay
+function closeModal2(overlay){
+
+   $(overlay).addClass('hidden').removeClass('open');
+   $('.modal.open').addClass('hidden').removeClass('open');
+   $('body').css('overflow', 'auto');
+}
+</script>
+<div class="modal hidden" id="download-modal"></div>
+<div class="modal--overlay hidden"></div>
 
 <div class="max-w-6xl mx-auto my-8">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -46,7 +154,7 @@
 <!-- 
         <div class="product--information"></div> -->
         <div class="product--information sticky top-5 p-2">
-            {% form 'product', product %}
+            <form action="/cart/add" method="post" class="product-form" id="add-to-cart">
                 <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
                 <div class="my-3">
                     <span class="text-xs text-gray-500">{{ product.vendor }}</span>
@@ -126,7 +234,7 @@
                 </div>
 
                 <div class="my-3">
-                    <button type="submit" name="add" class="w-2/4 px-6 py-4 bg-rose-600 text-white hover:bg-rose-700 rounded-sm my-2"
+                    <button onclick="addItem('add-to-cart'); return false; "  id="addToCartBtn"type="submit" name="add" class="btn btn--purchase w-2/4 px-6 py-4 bg-rose-600 text-white hover:bg-rose-700 rounded-sm my-2"
                         {% if product.selected_or_first_available_variant == false %}
                             disabled
                         {% endif %}
@@ -138,7 +246,7 @@
                         {% endif %}
                     </button>
                 </div>
-            {% endform %}
+                </form>
         </div>
     </div>
 </div>
